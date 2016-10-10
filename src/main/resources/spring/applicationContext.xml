@@ -27,7 +27,6 @@
                 <value>classpath:config/self-common.properties</value>
                 <value>classpath:config/self-user-cp.properties</value>
                 <value>classpath:config/self-mongo.properties</value>
-                <value>classpath:config/self-push.properties</value>
             </list>
         </property>
         <property name="fileEncoding" value="utf-8"/>
