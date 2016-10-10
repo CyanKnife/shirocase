@@ -16,7 +16,6 @@ public class AuthorizationHandlerInterceptor extends HandlerInterceptorAdapter {
 
     protected final static Logger logger = LoggerFactory.getLogger(AuthorizationHandlerInterceptor.class);
 
-
     /**
      * 拦截请求做预处理, 校验请求认证
      *
@@ -35,7 +34,6 @@ public class AuthorizationHandlerInterceptor extends HandlerInterceptorAdapter {
         response.sendRedirect("/user/login");
         return false;
     }
-
 
     private boolean checkLogin(HttpServletRequest request) {
 

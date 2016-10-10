@@ -1,6 +1,5 @@
 package main.java.com.self.shiro.aspect;
 
-
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
