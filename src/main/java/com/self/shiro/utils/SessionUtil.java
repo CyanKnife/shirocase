@@ -6,7 +6,6 @@ import javax.servlet.http.HttpSession;
 /**
  * Session 取值相关工具类
  *
- * @author DaiJian
  * @create 2016/5/16 11:08
  */
 public class SessionUtil {
