@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="commonDataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init"
+          destroy-method="close">
+        <property name="url" value="jdbc:sqlite:${sqlite.path}${sqlite.customer.filename}"/>
+        <!--<property name="username" value="self"/>-->
+        <!--<property name="password" value="self"/>-->
+    </bean>
+    <bean id="commonSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="commonDataSource"/>
+        <property name="mapperLocations">
+            <list>
+                <value>classpath*:mapper-common-sqlite/**/*.xml</value>
+            </list>
+        </property>
+    </bean>
+    <bean id="commonMapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.self.common.dao.sqlite"/>
+        <property name="sqlSessionFactoryBeanName" value="commonSqlSessionFactory"/>
+    </bean>
+
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate" abstract="false"
+          lazy-init="false" autowire="default">
+        <property name="dataSource">
+            <ref bean="commonDataSource"/>
+        </property>
+    </bean>
+</beans>

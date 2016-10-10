@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns="http://www.springframework.org/schema/beans" xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+
+    <context:annotation-config/>
+    <context:component-scan base-package="com.self"/>
+    <!--启动spring的aop自动代理-->
+    <aop:aspectj-autoproxy/>
+    <!-- 异步配置-->
+    <task:annotation-driven executor="asyncExecutor"/> <!-- 指定一个缺省的executor给@Async使用。-->
+    <task:executor id="asyncExecutor" pool-size="10-30" queue-capacity="100" rejection-policy="DISCARD_OLDEST"/>
+    <!--<task:executor id="pushExecutor" pool-size="100-1000" queue-capacity="100" rejection-policy="DISCARD_OLDEST" keep-alive="120"/>-->
+    <!-- keep-alive="" 线程池维护线程所允许的空闲时间,超过之后被结束,默认60s-->
+
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:self.properties</value>
+                <value>classpath:config/self-common.properties</value>
+                <value>classpath:config/self-user-cp.properties</value>
+                <value>classpath:config/self-mongo.properties</value>
+                <value>classpath:config/self-push.properties</value>
+            </list>
+        </property>
+        <property name="fileEncoding" value="utf-8"/>
+    </bean>
+    /*验证码*/
+    <bean id="captchaProducer" class="com.google.code.kaptcha.impl.DefaultKaptcha">
+        <property name="config">
+            <bean class="com.google.code.kaptcha.util.Config">
+                <constructor-arg>
+                    <props>
+                        <prop key="kaptcha.border">${kaptcha.border}</prop>
+                        <prop key="kaptcha.image.width">${kaptcha.image.width}</prop>
+                        <prop key="kaptcha.image.height">${kaptcha.image.height}</prop>
+                        <prop key="kaptcha.textproducer.font.size">${kaptcha.textproducer.font.size}</prop>
+                        <prop key="kaptcha.textproducer.char.string">${kaptcha.textproducer.char.string}</prop>
+                        <prop key="kaptcha.textproducer.char.length">${kaptcha.textproducer.char.length}</prop>
+                        <prop key="kaptcha.textproducer.char.space">${kaptcha.textproducer.char.space}</prop>
+                        <prop key="kaptcha.noise.impl">${kaptcha.noise.impl}</prop>
+                    </props>
+                </constructor-arg>
+            </bean>
+        </property>
+    </bean>
+
+    <bean id="exceptionHandler" class="com.self.shiro.cp.exception.MyExceptionHandler"/>
+
+    <import resource="self-common-context.xml"/>
+    <import resource="self-product-context.xml"/>
+    <import resource="self-user-cp-context.xml"/>
+    <import resource="self-mongo.xml"/>
+    <import resource="self-job-context.xml"/>
+    <bean id="dozerMapper" class="org.dozer.spring.DozerBeanMapperFactoryBean">
+    </bean>
+</beans>

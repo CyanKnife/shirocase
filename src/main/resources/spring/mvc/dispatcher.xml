@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context-4.2.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd"
+        >
+
+    <context:annotation-config/>
+    <context:component-scan base-package="com.self.web.cp.controller"/>
+    <aop:aspectj-autoproxy/>
+
+    <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+        <property name="templateLoaderPath" value="/WEB-INF/view/"/>
+        <!--指定模板文件目录-->
+        <property name="defaultEncoding" value="utf-8"/>
+        <property name="freemarkerSettings">
+            <props>
+                <!-- 模版更新时间 开发:0、线上:待定 无效-->
+                <prop key="template_update_delay">0</prop>
+                <prop key="locale">zh_CN</prop>
+                <prop key="datetime_format">yyyy-MM-dd</prop>
+                <prop key="date_format">yyyy-MM-dd</prop>
+                <prop key="number_format">#.##</prop>
+            </props>
+        </property>
+    </bean>
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.freemarker.FreeMarkerView"/>
+        <property name="suffix" value=".ftl"/>
+        <property name="contentType" value="text/html;charset=utf-8"/>
+        <property name="exposeRequestAttributes" value="true"/>
+        <property name="exposeSessionAttributes" value="true"/>
+        <property name="exposeSpringMacroHelpers" value="true"/>
+        <!-- 设置ContextAtrribute，以获得“contextPath” -->
+        <property name="requestContextAttribute" value="context"></property>
+        <!--禁止缓存-->
+        <property name="cache" value="false"/>
+
+    </bean>
+
+    <!-- 配置springMVC处理上传文件的信息 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="utf-8"/>
+        <property name="maxUploadSize" value="10485760000"/>
+        <property name="maxInMemorySize" value="40960"/>
+    </bean>
+
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basenames" value="classpath:i18n/message"/>
+        <property name="defaultEncoding" value="UTF-8"/>
+        <property name="cacheSeconds" value="120"/>
+    </bean>
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <property name="validationMessageSource" ref="messageSource"/>
+    </bean>
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.FixedLocaleResolver">
+        <property name="defaultLocale" value="zh_CN"/>
+    </bean>
+
+    <!-- 启用fastjson -->
+    <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+        <property name="favorPathExtension" value="false"/>
+        <property name="favorParameter" value="false"/>
+        <property name="ignoreAcceptHeader" value="false"/>
+        <property name="mediaTypes">
+            <value>
+                atom=application/atom+xml
+                html=text/html
+                json=application/json
+                *=*/*
+            </value>
+        </property>
+    </bean>
+    <!-- 开启JSR303验证 开启FASTJSON支持 -->
+    <mvc:annotation-driven validator="validator" content-negotiation-manager="contentNegotiationManager">
+        <mvc:message-converters register-defaults="true">
+            <bean id="fastJsonHttpMessageConverter"
+                  class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>text/html;charset=UTF-8</value>
+                        <value>application/json;charset=UTF-8</value>
+                    </list>
+                </property>
+                <property name="features">
+                    <!-- com.alibaba.fastjson.serializer.SerializerFeature 详见此枚举类 -->
+                    <list>
+                        <value>WriteMapNullValue</value>
+                        <!-- &lt;!&ndash; 是否输出值为null的字段,默认为false &ndash;&gt; -->
+                        <value>QuoteFieldNames</value>
+                        <!-- 输出key时是否使用双引号,默认为true -->
+                        <value>WriteNullNumberAsZero</value>
+                        <!-- 数值字段如果为null,输出为0,而非null -->
+                        <value>WriteNullListAsEmpty</value>
+                        <!-- List字段如果为null,输出为[],而非null -->
+                        <value>WriteNullStringAsEmpty</value>
+                        <!-- 字符类型字段如果为null,输出为"",而非null -->
+                        <value>WriteNullBooleanAsFalse</value>
+                        <!-- Boolean字段如果为null,输出为false,而非null -->
+                        <value>WriteDateUseDateFormat</value>
+                        <!-- 日期格式化? -->
+                        <value>DisableCircularReferenceDetect</value>
+                        <!-- 解决循环引用 -->
+                    </list>
+                </property>
+            </bean>
+        </mvc:message-converters>
+        <mvc:argument-resolvers>
+            <bean class="com.self.commons.web.spring.SessionAttributeArgumentResolver"/>
+        </mvc:argument-resolvers>
+    </mvc:annotation-driven>
+
+    <bean id="DisableCircularReferenceDetect"
+          class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+        <property name="staticField"
+                  value="com.alibaba.fastjson.serializer.SerializerFeature.DisableCircularReferenceDetect"/>
+    </bean>
+
+    <!-- API错误拦截器 -->
+    <bean class="com.self.web.cp.resolver.WebHandlerExceptionResolver">
+        <property name="contentType" value="application/json;charset=UTF-8"/>
+    </bean>
+    <!-- 金额转换格式化bean -->
+    <!--<bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">-->
+    <!--<property name="formatters">-->
+    <!--<set>-->
+    <!--<bean class="com.self.web.keeper.formatter.factory.AmountFormatterAnnotationFormatterFactory"/>-->
+    <!--</set>-->
+    <!--</property>-->
+    <!--</bean>-->
+
+    <mvc:resources mapping="/js/**" location="/WEB-INF/view/js/"/>
+    <mvc:resources mapping="/css/**" location="/WEB-INF/view/css/"/>
+    <mvc:resources mapping="/img/**" location="/WEB-INF/view/img/"/>
+    <!--<mvc:resources mapping="/static/**" location="/WEB-INF/view/static/"/>-->
+    <mvc:resources mapping="/core/js/**" location="/WEB-INF/view/core/js/"/>
+    <mvc:resources mapping="/core/css/**" location="/WEB-INF/view/core/css/"/>
+    <mvc:resources mapping="/core/img/**" location="/WEB-INF/view/core/img/"/>
+    <mvc:resources mapping="/core/fonts/**" location="/WEB-INF/view/core/fonts/"/>
+    <mvc:resources mapping="/page/static/**" location="/WEB-INF/view/page/static/"/>
+
+    <mvc:view-controller path="/" view-name="redirect:/index"/>
+
+
+    <!-- MVC 拦截器配置 -->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/**/js/**"/>
+            <mvc:exclude-mapping path="/**/css/**"/>
+            <mvc:exclude-mapping path="/**/img/**"/>
+            <mvc:exclude-mapping path="/**/fonts/**"/>
+            <mvc:exclude-mapping path="/**/static/**"/>
+            <mvc:exclude-mapping path="/"/>
+            <mvc:exclude-mapping path="/user/register/**"/>
+            <mvc:exclude-mapping path="/user/login/**"/>
+            <mvc:exclude-mapping path="/order/generate/**"/>
+            <mvc:exclude-mapping path="/order/OrderSchedule/get"/>
+            <!-- 授权处理器 -->
+            <bean class="com.self.web.cp.interceptor.AuthorizationHandlerInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+</beans>

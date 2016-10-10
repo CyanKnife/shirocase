@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- 文件上传临时记录清理job -->
+    <bean id="fileUploadLogJob" class="com.self.common.job.FileUploadLogJob"/>
+    <!-- 文件上传临时记录清理job detail -->
+    <bean id="fileUploadLogJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="fileUploadLogJob"/>
+        <property name="targetMethod" value="execute"/>
+    </bean>
+
+    <!-- 文件上传临时记录清理job 调度 -->
+    <bean id="fileUploadLogJobTigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="fileUploadLogJobDetail"/>
+        <property name="cronExpression" value="0 0 10 */3 * ?"/>
+    </bean>
+
+    <!-- schedule factory -->
+    <bean id="quartzSchedule" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" autowire="no" lazy-init="false">
+        <property name="triggers">
+            <list>
+                <ref bean="fileUploadLogJobTigger"></ref>
+            </list>
+        </property>
+    </bean>
+</beans>

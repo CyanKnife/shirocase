@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <contextName>shirocase</contextName>
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger:%line - %msg%ex%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="A1" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <Append>true</Append>
+        <File>${log.config.appender.file}</File>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>${log.config.appender.fileNamePattern}</FileNamePattern>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger:%line - %msg%ex%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="${log.config.root.level}">
+        <appender-ref ref="${log.config.appender.default}"/>
+        <appender-ref ref="${log.config.appender.A1}"/>
+    </root>
+
+    <!-- 项目输出级别 -->
+    <logger name="com.self" level="${log.com.self.level}"/>
+    <!-- 第三方输出级别 -->
+    <logger name="ch.qos.logback" level="ERROR"/>
+    <logger name="org.springframework" level="ERROR"/>
+    <logger name="org.apache.commons.beanutils" level="ERROR"/>
+    <logger name="javapns.notification" level="ERROR"/>
+    <logger name="com.ibatis" level="ERROR"/>
+    <logger name="org.hibernate" level="ERROR"/>
+    <logger name="org.mybatis" level="ERROR"/>
+    <logger name="org.mongodb" level="ERROR"/>
+    <logger name="org.dozer" level="ERROR"/>
+    <logger name="org.springframework.data" level="ERROR"/>
+    <logger name="org.quartz.core" level="ERROR" />
+</configuration>
