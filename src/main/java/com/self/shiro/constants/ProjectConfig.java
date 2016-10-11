@@ -1,4 +1,4 @@
-package main.java.com.self.shiro.constants;
+package com.self.shiro.constants;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

@@ -51,7 +51,7 @@
         </property>
     </bean>
 
-    <bean id="exceptionHandler" class="com.self.shiro.cp.exception.MyExceptionHandler"/>
+    <bean id="exceptionHandler" class="com.self.shiro.exception.MyExceptionHandler"/>
 
     <import resource="self-common-context.xml"/>
     <import resource="self-product-context.xml"/>

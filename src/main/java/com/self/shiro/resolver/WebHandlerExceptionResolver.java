@@ -1,4 +1,4 @@
-package main.java.com.self.shiro.resolver;
+package com.self.shiro.resolver;
 
 import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;

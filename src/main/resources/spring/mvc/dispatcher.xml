@@ -15,7 +15,7 @@
         >
 
     <context:annotation-config/>
-    <context:component-scan base-package="com.self.web.cp.controller"/>
+    <context:component-scan base-package="com.self.shiro.controller"/>
     <aop:aspectj-autoproxy/>
 
     <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
@@ -114,9 +114,9 @@
                 </property>
             </bean>
         </mvc:message-converters>
-        <mvc:argument-resolvers>
-            <bean class="com.self.commons.web.spring.SessionAttributeArgumentResolver"/>
-        </mvc:argument-resolvers>
+        <!--<mvc:argument-resolvers>-->
+        <!--<bean class="com.self.commons.web.spring.SessionAttributeArgumentResolver"/>-->
+        <!--</mvc:argument-resolvers>-->
     </mvc:annotation-driven>
 
     <bean id="DisableCircularReferenceDetect"
@@ -126,7 +126,7 @@
     </bean>
 
     <!-- API错误拦截器 -->
-    <bean class="com.self.web.cp.resolver.WebHandlerExceptionResolver">
+    <bean class="com.self.shiro.resolver.WebHandlerExceptionResolver">
         <property name="contentType" value="application/json;charset=UTF-8"/>
     </bean>
     <!-- 金额转换格式化bean -->
@@ -141,15 +141,12 @@
     <mvc:resources mapping="/js/**" location="/WEB-INF/view/js/"/>
     <mvc:resources mapping="/css/**" location="/WEB-INF/view/css/"/>
     <mvc:resources mapping="/img/**" location="/WEB-INF/view/img/"/>
-    <!--<mvc:resources mapping="/static/**" location="/WEB-INF/view/static/"/>-->
     <mvc:resources mapping="/core/js/**" location="/WEB-INF/view/core/js/"/>
     <mvc:resources mapping="/core/css/**" location="/WEB-INF/view/core/css/"/>
     <mvc:resources mapping="/core/img/**" location="/WEB-INF/view/core/img/"/>
-    <mvc:resources mapping="/core/fonts/**" location="/WEB-INF/view/core/fonts/"/>
     <mvc:resources mapping="/page/static/**" location="/WEB-INF/view/page/static/"/>
 
     <mvc:view-controller path="/" view-name="redirect:/index"/>
-
 
     <!-- MVC 拦截器配置 -->
     <mvc:interceptors>
@@ -166,7 +163,7 @@
             <mvc:exclude-mapping path="/order/generate/**"/>
             <mvc:exclude-mapping path="/order/OrderSchedule/get"/>
             <!-- 授权处理器 -->
-            <bean class="com.self.web.cp.interceptor.AuthorizationHandlerInterceptor"/>
+            <bean class="com.self.shiro.interceptor.AuthorizationHandlerInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>
 </beans>

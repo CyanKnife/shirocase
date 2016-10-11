@@ -1,4 +1,4 @@
-package main.java.com.self.shiro.exception;
+package com.self.shiro.exception;
 
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
