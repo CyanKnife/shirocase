@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title></title>
+    <meta charset="UTF-8" />
+    <link href="sample-css/page.css" rel="stylesheet" type="text/css" />
+    <link href="css/dp.css" rel="stylesheet" type="text/css" />
+    
+    
+    <script src="src/jquery.js" type="text/javascript"></script>
+    <script src="src/Plugins/datepicker_lang_US.js" type="text/javascript"></script>
+    <script src="src/Plugins/jquery.datepicker.js" type="text/javascript"></script>
+    
+    <!--code highlighter file import-->
+    <script src="../highlighter/scripts/shCore.js" type="text/javascript"></script>
+    <script src="../highlighter/scripts/shBrushJScript.js" type="text/javascript"></script>
+    <script src="../highlighter/scripts/shBrushCss.js" type="text/javascript"></script>  
+    <link href="../highlighter/styles/shCore.css" rel="stylesheet" type="text/css" />
+    <link href="../highlighter/styles/shThemeDefault.css" rel="stylesheet" type="text/css" /> 
+    <script type="text/javascript">
+        SyntaxHighlighter.config.clipboardSwf = '../highlighter/scripts/clipboard.swf';
+    	  SyntaxHighlighter.all();
+	  </script>
+    <!--end code highlighter-->
+    
+    <script type="text/javascript">
+        $(document).ready(function() {           
+            $("#datetime").datepicker({ picker: "<button>Select</button>", applyrule: rule });
+            $("#endtime").datepicker({ picker: "<button>Select</button>", applyrule: rule });
+            $("#temptime").datepicker({ picker: "<img class='picker' align='middle' src='sample-css/cal.gif' alt=''/>" });
+            $("#hdobj").datepicker({ 
+                picker: "#handler",  //this should be a hidden
+                onReturn:function(d){
+                    alert(d.Format("M/d, yyyy"));
+                    $("#target").html(d.Format("M/d, yyyy"));
+                } 
+            });
+            function rule(id) {
+                if (id == 'datetime') {
+                    var v = $("#endtime").val();
+                    if (v == "") {
+                        return null;
+                    }
+                    else {
+                        var d = v.match(/^(\d{1,4})(-|\/|.)(\d{1,2})\2(\d{1,2})$/);
+                        if (d != null) {
+                            var nd = new Date(parseInt(d[1], 10), parseInt(d[3], 10) - 1, parseInt(d[4], 10));
+                            return { enddate: nd };
+                        }
+                        else {
+                            return null;
+                        }
+                    }
+                }
+                else {
+                    var v = $("#datetime").val();
+                    if (v == "") {
+                        return null;
+                    }
+                    else {
+                        var d = v.match(/^(\d{1,4})(-|\/|.)(\d{1,2})\2(\d{1,2})$/);
+                        if (d != null) {
+                            var nd = new Date(parseInt(d[1], 10), parseInt(d[3], 10) - 1, parseInt(d[4], 10));
+                            return { startdate: nd };
+                        }
+                        else {
+                            return null;
+                        }
+                    }
+
+                }
+            }
+        });
+    </script>
+</head>
+<body>     
+    <div style="padding:10px;"> 
+    <h1>Date Picker Samples vs Code</h1>
+    <h2>Samples</h2> 
+   
+    <fieldset>
+        <legend>Simple Date Picker</legend>
+        <div>
+            <input type="text" id="temptime" />
+        </div>
+        <div class="tip">
+            A simple calendar goes with following three lines.
+        </div>
+        <pre class="brush:js;">
+           //#temptime is id of a text box to hold date  
+           $(&quot;#temptime&quot;).datepicker({ 
+             //picker is a button to fire date picker up.
+             picker: &quot;<img class='picker' align='middle' src='/themes/shared/images/s.gif' alt=''/>&quot; 
+           });
+        </pre>
+          The following lines make text box and button together.
+        <pre class="brush:css;">
+            .picker
+	        {
+	            height:16px;
+	            width:16px;
+	            background:url("/images/icons/cal.gif") no-repeat;
+	            margin-left:-19px;
+	            cursor:pointer;
+	            border:none;		  
+	        }
+        </pre>
+    </fieldset>
+    <fieldset>
+        <legend>Two Pickers Work Together</legend>
+        <div>
+            <input type="text"  id='datetime'/>
+            <input type="text"  id='endtime'/>
+        </div>
+        <div class="tip">
+            Every time date picker drops down, function applyrule will be called to define an avaliable range.<br>
+            return format {startdate:'date',enddate:'date'};
+        </div>
+        <pre class="brush:js;">
+            $("#datetime").datepicker({ picker: "<button>Select</button>", applyrule:rule });
+            $("#endtime").datepicker({ picker: "<button>Select</button>", applyrule: rule });
+            
+            function rule(id) {
+                //before start time picker drops down
+                if (id == 'datetime') { 
+                    var v = $("#endtime").val();
+                    if (v == "") {
+                        return null;
+                    }
+                    else {
+                        //To get end time. All dates after end time will be disabled.
+                        var d = v.match(/^(\d{1,4})(-|\/|.)(\d{1,2})\2(\d{1,2})$/);
+                        if (d != null) {
+                            var nd = new Date(parseInt(d[1], 10), parseInt(d[3], 10) - 1, parseInt(d[4], 10));
+                            return { enddate: nd };
+                        }
+                        else {
+                            return null;
+                        }
+                    }
+                }
+                else {
+                    var v = $("#datetime").val();
+                    if (v == "") {
+                        return null;
+                    }
+                    else {
+                       //To get start time. All dates before start time will be disabled.
+                        var d = v.match(/^(\d{1,4})(-|\/|.)(\d{1,2})\2(\d{1,2})$/);
+                        if (d != null) {
+                            var nd = new Date(parseInt(d[1], 10), parseInt(d[3], 10) - 1, parseInt(d[4], 10));
+                            return { startdate: nd };
+                        }
+                        else {
+                            return null;
+                        }
+                    }
+
+                }
+            }
+        </pre>
+    </fieldset>
+     <fieldset>
+        <legend>Attach </legend>
+        <p></p>
+         <p></p>
+        <div id="target">
+            <a id='handler' href='javascript:void'>Click me</a>
+            <input type="hidden" id="hdobj"/>
+            <div id="target"> date picked will goes here</div>
+        </div>
+        <pre class="brush:js;">
+            $("#hdobj").datepicker({ 
+                                    picker: "#handler",  //this should be a hidden
+                                    onReturn:function(d){
+                                                alert(d.Format("M/d, yyyy"));
+                                                $("#target").html(d.Format("M/d, yyyy"));
+                                              } 
+                                    });
+        </pre>
+    </fieldset>
+    </div>
+</body>
+</html>

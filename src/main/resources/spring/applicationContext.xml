@@ -23,15 +23,18 @@
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="locations">
             <list>
-                <value>classpath:self.properties</value>
-                <value>classpath:config/self-common.properties</value>
-                <value>classpath:config/self-user-cp.properties</value>
-                <value>classpath:config/self-mongo.properties</value>
+                   <value>classpath:self.properties</value>
+                   <value>classpath:config/self-common.properties</value>
+                   <value>classpath:config/self-user-cp.properties</value>
+                   <value>classpath:config/self-mongo.properties</value>
+                    <value>classpath:config/kaptcha.properties</value>
             </list>
         </property>
         <property name="fileEncoding" value="utf-8"/>
     </bean>
-    /*验证码*/
+
+
+    <!-- 验证码-->
     <bean id="captchaProducer" class="com.google.code.kaptcha.impl.DefaultKaptcha">
         <property name="config">
             <bean class="com.google.code.kaptcha.util.Config">
@@ -53,11 +56,11 @@
 
     <bean id="exceptionHandler" class="com.self.shiro.exception.MyExceptionHandler"/>
 
-    <import resource="self-common-context.xml"/>
+    <!--<import resource="self-common-context.xml"/>
     <import resource="self-product-context.xml"/>
     <import resource="self-user-cp-context.xml"/>
     <import resource="self-mongo.xml"/>
     <import resource="self-job-context.xml"/>
     <bean id="dozerMapper" class="org.dozer.spring.DozerBeanMapperFactoryBean">
-    </bean>
+    </bean>-->
 </beans>

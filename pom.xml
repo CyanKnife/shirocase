@@ -216,11 +216,6 @@
 
         <!-- web start -->
         <dependency>
-            <groupId>com.google.code</groupId>
-            <artifactId>kaptcha</artifactId>
-            <version>${kaptcha.version}</version>
-        </dependency>
-        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>${jstl.version}</version>

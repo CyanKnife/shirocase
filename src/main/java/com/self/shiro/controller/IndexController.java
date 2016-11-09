@@ -24,6 +24,6 @@ public class IndexController {
     @RequestMapping(value = "")
     @ResponseBody
     public ModelAndView index() {
-        return new ModelAndView("page/index/nav");
+        return new ModelAndView("page/index");
     }
 }
